@@ -66,6 +66,14 @@ public class BatteryLedService extends Service {
                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
+    @Override
+    public void onDestroy() {
+
+        super.onDestroy();
+
+        mNotificationManager.cancelAll();
+    }
+
     public IBinder onBind(Intent aIntent) {
 
         return null;
