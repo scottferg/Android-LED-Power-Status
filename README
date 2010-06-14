@@ -1,0 +1,8 @@
+Android LED Power Status
+
+This simple app starts up a notification service whenever your device is plugged
+into a power source.  While charging, and while your phone is asleep, the app
+will notify you of the current charge state with an array of colors ranging from
+red, to yellow, to green.  Each color represents a battery charge range,
+which is more descriptive than the existing charged/not-charged LED indicator
+that Android devices provide by default.
