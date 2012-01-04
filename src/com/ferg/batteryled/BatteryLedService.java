@@ -7,23 +7,32 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 
 public class BatteryLedService extends Service {
 
-    private static final String TAG = "BatteryLED";
+    public static final String TAG = "BatteryLEDService";
 
     private static final int LED_NOTIFICATION = 0;
 
-    private static final int GREEN_LED = 0xff00ff00;
-    private static final int YELLOWGREEN_LED = 0xff66ff00;
-    private static final int YELLOW_LED = 0xffffff00;
-    private static final int ORANGE_LED = 0xffff4500;
-    private static final int RED_LED = 0xffff0000;
+    private static int HIGH_COLOR = 0xff00ff00;
+    private static int MEDIUM_HIGH_COLOR = 0xff66ff00;
+    private static int MEDIUM_COLOR = 0xffffff00;
+    private static int MEDIUM_LOW_COLOR = 0xffff4500;
+    private static int LOW_COLOR = 0xffff0000;
+
+    public static final String HIGH = "High";
+    public static final String MEDIUM_HIGH = "Medium-high";
+    public static final String MEDIUM = "Medium";
+    public static final String MEDIUM_LOW = "Medium-low";
+    public static final String LOW = "Low";
+    public static final String PREFS_SET = "PrefSet";
 
     private NotificationManager mNotificationManager;
     private BroadcastReceiver mBatteryInfoReceiver;
+    private SharedPreferences mPrefs;
 
     @Override
     public void onCreate() {
@@ -31,6 +40,7 @@ public class BatteryLedService extends Service {
         super.onCreate();
 
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mPrefs = getSharedPreferences(TAG, MODE_PRIVATE);
 
         mBatteryInfoReceiver = new BroadcastReceiver() {
             @Override
@@ -38,21 +48,29 @@ public class BatteryLedService extends Service {
 
                 int level = intent.getIntExtra("level", 0);
 
+                if (mPrefs.getBoolean(PREFS_SET, false)) {
+                    HIGH_COLOR = mPrefs.getInt(HIGH, 0);
+                    MEDIUM_HIGH_COLOR = mPrefs.getInt(MEDIUM_HIGH, 0);
+                    MEDIUM_COLOR = mPrefs.getInt(MEDIUM, 0);
+                    MEDIUM_LOW_COLOR = mPrefs.getInt(MEDIUM_LOW, 0);
+                    LOW_COLOR = mPrefs.getInt(LOW, 0);
+                }
+
                 Log.i(TAG, Integer.toString(level));
 
                 Notification flash = new Notification();
                 mNotificationManager.cancelAll();
 
                 if (level < 25) {
-                    flash.ledARGB = RED_LED;
+                    flash.ledARGB = LOW_COLOR;
                 } else if (level > 24 && level < 50) {
-                    flash.ledARGB = ORANGE_LED;
+                    flash.ledARGB = MEDIUM_LOW_COLOR;
                 } else if (level > 49 && level < 75) {
-                    flash.ledARGB = YELLOW_LED;
+                    flash.ledARGB = MEDIUM_COLOR;
                 } else if (level > 74 && level < 90) {
-                    flash.ledARGB = YELLOWGREEN_LED;
+                    flash.ledARGB = MEDIUM_HIGH_COLOR;
                 } else {
-                    flash.ledARGB = GREEN_LED;
+                    flash.ledARGB = HIGH_COLOR;
                 }
 
                 flash.flags = Notification.FLAG_SHOW_LIGHTS|Notification.FLAG_ONGOING_EVENT;

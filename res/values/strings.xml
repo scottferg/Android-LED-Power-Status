@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BatteryLedActivity</string>
+    <string name="app_name">Battery LED Indicator</string>
+    <string name="menu_title">Set a color for each battery level</string>
+    <string name="high" formatted="false">90% charge or higher</string>
+    <string name="medium_high" formatted="false">Between 75% and 89% charge</string>
+    <string name="medium" formatted="false">Between 50% and 74%</string>
+    <string name="medium_low" formatted="false">Between 25% and 49% charge</string>
+    <string name="low" formatted="false">Less than 25% charge</string>
 </resources>
